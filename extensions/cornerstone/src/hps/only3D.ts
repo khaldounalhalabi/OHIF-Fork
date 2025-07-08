@@ -47,7 +47,7 @@ export const only3D = {
             orientation: 'coronal',
             customViewportProps: {
               hideOverlays: true,
-              syncGroups: [HYDRATE_SEG_SYNC_GROUP],
+              syncGroups: [VOI_SYNC_GROUP, HYDRATE_SEG_SYNC_GROUP],
             },
           },
           displaySets: [

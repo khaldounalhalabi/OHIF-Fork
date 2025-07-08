@@ -4,6 +4,9 @@ window.config = {
   showStudyList: true,
   extensions: [],
   modes: [],
+  investigationalUseDialog: {
+    option: 'never',
+  },
   // below flag is for performance reasons, but it might not work for all servers
   showWarningMessageForCrossOrigin: true,
   showCPUFallbackMessage: true,
@@ -52,5 +55,60 @@ window.config = {
   ],
   httpErrorHandler: error => {
     console.warn(`HTTP Error Handler (status: ${error.status})`, error);
+  },
+  whiteLabeling: {
+    createLogoComponentFn: function (React) {
+      return React.createElement(
+        'div',
+        {
+          className: 'flex items-center space-x-2 text-white',
+        },
+        React.createElement(
+          'svg',
+          {
+            width: '24',
+            height: '24',
+            viewBox: '0 0 24 24',
+            fill: 'none',
+            xmlns: 'http://www.w3.org/2000/svg',
+            className: 'text-primary-light',
+          },
+          React.createElement('rect', {
+            x: '11',
+            y: '3',
+            width: '2',
+            height: '18',
+            fill: 'currentColor',
+          }),
+          React.createElement('rect', {
+            x: '3',
+            y: '11',
+            width: '18',
+            height: '2',
+            fill: 'currentColor',
+          })
+        ),
+        React.createElement(
+          'div',
+          {
+            className: 'flex flex-col',
+          },
+          React.createElement(
+            'span',
+            {
+              className: 'text-lg font-bold leading-tight',
+            },
+            'Reslan Alnaal'
+          ),
+          React.createElement(
+            'span',
+            {
+              className: 'text-sm text-primary-light leading-tight',
+            },
+            'Medical Center'
+          )
+        )
+      );
+    },
   },
 };

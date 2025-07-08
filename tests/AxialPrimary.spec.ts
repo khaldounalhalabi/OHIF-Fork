@@ -18,7 +18,8 @@ test.describe('Axial Primary Test', async () => {
     await checkForScreenshot(
       page,
       page,
-      screenShotPaths.axialPrimary.axialPrimaryDisplayedCorrectly
+      screenShotPaths.axialPrimary.axialPrimaryDisplayedCorrectly,
+      200
     );
   });
 });

@@ -1,20 +1,11 @@
-import React, {
-  useState,
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
-import ManagedDialog, { ManagedDialogProps, ManagedDialogRef } from './ManagedDialog';
+import React, { useState, createContext, useContext, useCallback, useEffect, useMemo } from 'react';
+import ManagedDialog, { ManagedDialogProps } from './ManagedDialog';
 
 interface DialogContextType {
   show: (options: ManagedDialogProps) => string;
   hide: (id: string) => void;
   hideAll: () => void;
   isEmpty: () => boolean;
-  updatePosition: (id: string, position: { x: number; y: number }) => void;
 }
 
 interface DialogService {
@@ -44,7 +35,6 @@ const DialogProvider: React.FC<DialogProviderProps> = ({
   service = null,
 }) => {
   const [dialogs, setDialogs] = useState<(ManagedDialogProps & { id: string })[]>([]);
-  const dialogRefs = useRef<Map<string, ManagedDialogRef>>(new Map());
 
   const show = useCallback((options: ManagedDialogProps) => {
     const id = options.id;
@@ -54,22 +44,13 @@ const DialogProvider: React.FC<DialogProviderProps> = ({
 
   const hide = useCallback((id: string) => {
     setDialogs(prev => prev.filter(dialog => dialog.id !== id));
-    dialogRefs.current.delete(id);
   }, []);
 
   const hideAll = useCallback(() => {
     setDialogs([]);
-    dialogRefs.current.clear();
   }, []);
 
   const isEmpty = useCallback(() => dialogs.length === 0, [dialogs]);
-
-  const updatePosition = useCallback((id: string, position: { x: number; y: number }) => {
-    const dialogRef = dialogRefs.current.get(id);
-    if (dialogRef) {
-      dialogRef.updatePosition(position);
-    }
-  }, []);
 
   const contextValue = useMemo(
     () => ({
@@ -77,9 +58,8 @@ const DialogProvider: React.FC<DialogProviderProps> = ({
       hide,
       hideAll,
       isEmpty,
-      updatePosition,
     }),
-    [show, hide, hideAll, isEmpty, updatePosition]
+    [show, hide, hideAll, isEmpty]
   );
 
   useEffect(() => {
@@ -96,11 +76,6 @@ const DialogProvider: React.FC<DialogProviderProps> = ({
       {dialogs.map(dialog => (
         <RenderedDialog
           key={dialog.id}
-          ref={(ref: ManagedDialogRef) => {
-            if (ref) {
-              dialogRefs.current.set(dialog.id, ref);
-            }
-          }}
           onClose={hide}
           isOpen={true}
           {...dialog}

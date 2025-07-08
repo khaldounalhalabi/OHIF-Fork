@@ -71,7 +71,7 @@ export const mprAnd3DVolumeViewport = {
             customViewportProps: {
               hideOverlays: true,
             },
-            syncGroups: [HYDRATE_SEG_SYNC_GROUP],
+            syncGroups: [VOI_SYNC_GROUP, HYDRATE_SEG_SYNC_GROUP],
           },
           displaySets: [
             {

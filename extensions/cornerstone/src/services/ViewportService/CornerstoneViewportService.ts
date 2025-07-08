@@ -835,19 +835,16 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
     const displaySetModality = displaySet?.Modality;
 
     // filter overlay display sets (e.g. segmentation) since they will get handled below via the segmentation service
-    const filteredVolumeInputArray = volumeInputArray
-      .map((volumeInput, index) => {
-        return { volumeInput, displaySetOptions: displaySetOptions[index] };
-      })
-      .filter(({ volumeInput }) => {
-        const displaySet = displaySetService.getDisplaySetByUID(volumeInput.displaySetInstanceUID);
-        return !displaySet?.isOverlayDisplaySet;
-      });
+    const filteredVolumeInputArray = volumeInputArray.filter(volumeInput => {
+      const displaySet = displaySetService.getDisplaySetByUID(volumeInput.displaySetInstanceUID);
+      return !displaySet?.isOverlayDisplaySet;
+    });
 
     // Todo: use presentations states
-    const volumesProperties = filteredVolumeInputArray.map(({ volumeInput, displaySetOptions }) => {
+    const volumesProperties = filteredVolumeInputArray.map((volumeInput, index) => {
       const { volumeId } = volumeInput;
-      const { voi, voiInverted, colormap, displayPreset } = displaySetOptions;
+      const displaySetOption = displaySetOptions[index];
+      const { voi, voiInverted, colormap, displayPreset } = displaySetOption;
       const properties = {} as ViewportProperties;
 
       if (voi && (voi.windowWidth || voi.windowCenter)) {
@@ -890,9 +887,13 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
       if (backgroundDisplaySet.length !== 1) {
         throw new Error('Background display set not found');
       }
-    }
 
-    await viewport.setVolumes(volumeInputArray);
+      await viewport.setVolumes([
+        { volumeId: `${VOLUME_LOADER_SCHEME}:${backgroundDisplaySet[0].displaySetInstanceUID}` },
+      ]);
+    } else {
+      await viewport.setVolumes(filteredVolumeInputArray);
+    }
 
     if (addOverlayFn) {
       addOverlayFn();

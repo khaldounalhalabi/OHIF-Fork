@@ -26,7 +26,8 @@ test.describe('3D primary Test', async () => {
     await checkForScreenshot(
       page,
       page,
-      screenShotPaths.threeDPrimary.threeDPrimaryDisplayedCorrectly
+      screenShotPaths.threeDPrimary.threeDPrimaryDisplayedCorrectly,
+      200
     );
   });
 });

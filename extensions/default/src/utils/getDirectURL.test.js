@@ -2,39 +2,19 @@ import getDirectURL from './getDirectURL';
 import getBulkdataValue from './getBulkdataValue';
 import createRenderedRetrieve from './createRenderedRetrieve';
 
-const mockedGetBulkdataValue = getBulkdataValue as jest.Mock;
-const mockedCreateRenderedRetrieve = createRenderedRetrieve as jest.Mock;
-
 jest.mock('@ohif/core');
 jest.mock('./getBulkdataValue');
 jest.mock('./createRenderedRetrieve');
 
-global.URL.createObjectURL = jest.fn(() => 'blob:') as jest.Mock;
+global.URL.createObjectURL = jest.fn(() => 'blob:');
 
 describe('getDirectURL', () => {
-  interface GetDirectURLConfig {
-    singlepart: boolean | string[];
-    defaultType: string;
-  }
-
-  interface GetDirectURLParams {
-    tag: string;
-    defaultPath: string;
-    instance: {
-      StudyInstanceUID: string;
-      SeriesInstanceUID: string;
-      SOPInstanceUID: string;
-      [key: string]: unknown;
-    };
-    url?: string;
-  }
-
-  const config: GetDirectURLConfig = {
+  const config = {
     singlepart: true,
     defaultType: 'video/mp4',
   };
 
-  const params: GetDirectURLParams = {
+  const params = {
     tag: 'PixelData',
     defaultPath: '/path/to/pixeldata',
     instance: {
@@ -43,12 +23,6 @@ describe('getDirectURL', () => {
       SOPInstanceUID: 'sop-uid',
     },
   };
-
-  beforeEach(() => {
-    mockedGetBulkdataValue.mockClear();
-    mockedCreateRenderedRetrieve.mockClear();
-    (global.URL.createObjectURL as jest.Mock).mockClear();
-  });
 
   it('should return the provided URL if it exists', () => {
     const url = 'https://example.com/direct-retrieve';
@@ -72,7 +46,7 @@ describe('getDirectURL', () => {
       instance: {
         ...params.instance,
         PixelData: value,
-      } as GetDirectURLParams['instance'],
+      },
     });
 
     expect(result).toBe(value.DirectRetrieveURL);
@@ -89,7 +63,7 @@ describe('getDirectURL', () => {
       instance: {
         ...params.instance,
         PixelData: value,
-      } as GetDirectURLParams['instance'],
+      },
     });
 
     expect(result).toContain('blob:');
@@ -111,7 +85,7 @@ describe('getDirectURL', () => {
         instance: {
           ...params.instance,
           PixelData: value,
-        } as GetDirectURLParams['instance'],
+        },
       }
     );
 
@@ -119,12 +93,7 @@ describe('getDirectURL', () => {
   });
 
   it('should return the BulkDataURI with defaultType if singlepart is false with retrieveBulkData', async () => {
-    interface PixelDataValueWithRetrieveBulkData {
-      BulkDataURI: string;
-      retrieveBulkData: jest.Mock<Promise<Uint8Array>, []>;
-    }
-
-    const value: PixelDataValueWithRetrieveBulkData = {
+    const value = {
       BulkDataURI: 'https://example.com/bulkdata',
       retrieveBulkData: jest.fn().mockResolvedValueOnce(new Uint8Array([0, 1, 2])),
     };
@@ -140,7 +109,7 @@ describe('getDirectURL', () => {
         instance: {
           ...params.instance,
           PixelData: value,
-        } as GetDirectURLParams['instance'],
+        },
       }
     );
 
@@ -150,12 +119,7 @@ describe('getDirectURL', () => {
   it('should return the BulkDataURI with defaultType if singlepart does not include fetchPart', async () => {
     const arr = new Uint8Array([0, 1, 2]);
 
-    interface PixelDataValueWithRetrieveBulkData {
-      BulkDataURI: string;
-      retrieveBulkData: jest.Mock<Promise<Uint8Array>, []>;
-    }
-
-    const value: PixelDataValueWithRetrieveBulkData = {
+    const value = {
       BulkDataURI: 'https://example.com/bulkdata',
       retrieveBulkData: jest.fn().mockResolvedValueOnce(arr),
     };
@@ -171,37 +135,35 @@ describe('getDirectURL', () => {
         instance: {
           ...params.instance,
           PixelData: value,
-        } as GetDirectURLParams['instance'],
+        },
       }
     );
 
     expect(result).toContain('blob:');
-    expect(global.URL.createObjectURL).toHaveBeenCalledWith(
-      new Blob([arr], { type: 'accept=video/mp4' })
-    );
+    expect(URL.createObjectURL).toHaveBeenCalledWith(new Blob([arr], { type: 'accept=video/mp4' }));
   });
 
   it('should return the URL from getBulkdataValue if it exists', () => {
     const bulkDataURL = 'https://example.com/bulkdata';
 
-    mockedGetBulkdataValue.mockReturnValueOnce(bulkDataURL);
+    getBulkdataValue.mockReturnValueOnce(bulkDataURL);
 
     const result = getDirectURL(config, params);
 
-    expect(mockedGetBulkdataValue).toHaveBeenCalledWith(config, params);
+    expect(getBulkdataValue).toHaveBeenCalledWith(config, params);
     expect(result).toBe(bulkDataURL);
   });
 
   it('should return the URL from createRenderedRetrieve if getBulkdataValue returns falsy', () => {
     const renderedRetrieveURL = 'https://example.com/rendered-retrieve';
 
-    mockedGetBulkdataValue.mockReturnValueOnce(null);
-    mockedCreateRenderedRetrieve.mockReturnValueOnce(renderedRetrieveURL);
+    getBulkdataValue.mockReturnValueOnce(null);
+    createRenderedRetrieve.mockReturnValueOnce(renderedRetrieveURL);
 
     const result = getDirectURL(config, params);
 
-    expect(mockedGetBulkdataValue).toHaveBeenCalledWith(config, params);
-    expect(mockedCreateRenderedRetrieve).toHaveBeenCalledWith(config, params);
+    expect(getBulkdataValue).toHaveBeenCalledWith(config, params);
+    expect(createRenderedRetrieve).toHaveBeenCalledWith(config, params);
     expect(result).toBe(renderedRetrieveURL);
   });
 });

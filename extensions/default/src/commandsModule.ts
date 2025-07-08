@@ -395,7 +395,6 @@ const commandsModule = ({
           hangingProtocolService.setProtocol(protocolId, {
             stageId,
             stageIndex: useStageIdx,
-            displaySetSelectorMap,
           });
         } else {
           hangingProtocolService.setProtocol(protocolId, {

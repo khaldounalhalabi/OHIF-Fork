@@ -132,12 +132,12 @@ function modeFactory({ modeConfiguration }) {
       ]);
 
       toolbarService.updateSection('ROIThresholdToolbox', ['SegmentationTools']);
-      toolbarService.updateSection('SegmentationTools', [
+      toolbarService.updateSection('segmentationToolboxToolsSection', [
         'RectangleROIStartEndThreshold',
         'BrushTools',
       ]);
 
-      toolbarService.updateSection('BrushTools', ['Brush', 'Eraser', 'Threshold']);
+      toolbarService.updateSection('brushToolsSection', ['Brush', 'Eraser', 'Threshold']);
 
       customizationService.setCustomizations({
         'panelSegmentation.tableMode': {

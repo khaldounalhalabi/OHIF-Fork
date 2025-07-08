@@ -37,8 +37,6 @@ import * as utils from './utils';
 import { Toolbox } from './utils';
 import MoreDropdownMenu from './Components/MoreDropdownMenu';
 import requestDisplaySetCreationForStudy from './Panels/requestDisplaySetCreationForStudy';
-import { Toolbar } from './Toolbar/Toolbar';
-
 const defaultExtension: Types.Extensions.Extension = {
   /**
    * Only required property. Should be a unique value across all extensions.
@@ -105,5 +103,4 @@ export {
   requestDisplaySetCreationForStudy,
   callInputDialog,
   createReportDialogPrompt,
-  Toolbar,
 };

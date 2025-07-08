@@ -53,6 +53,7 @@ export function WindowLevelActionMenuContent({
 
   return (
     <AllInOneMenu.Menu
+      menuKey={menuKey}
       key={menuKey}
       // the visibility is handled by the parent component
       isVisible={true}

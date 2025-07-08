@@ -132,10 +132,6 @@ const cornerstoneExtension: Types.Extensions.Extension = {
   },
   getPanelModule,
   onModeExit: ({ servicesManager }: withAppTypes): void => {
-    unsubscriptions.forEach(unsubscribe => unsubscribe());
-    // Clear the unsubscriptions
-    unsubscriptions.length = 0;
-
     const { cineService, segmentationService } = servicesManager.services;
     // Empty out the image load and retrieval pools to prevent memory leaks
     // on the mode exits
@@ -154,6 +150,10 @@ const cornerstoneExtension: Types.Extensions.Extension = {
     useToggleOneUpViewportGridStore.getState().clearToggleOneUpViewportGridStore();
     useSegmentationPresentationStore.getState().clearSegmentationPresentationStore();
     segmentationService.removeAllSegmentations();
+
+    unsubscriptions.forEach(unsubscribe => unsubscribe());
+    // Clear the unsubscriptions
+    unsubscriptions.length = 0;
   },
 
   /**

@@ -463,17 +463,17 @@ export default function getToolbarModule({ servicesManager, extensionManager }: 
       evaluate: ({ viewportId, button }) => {
         let synchronizers = syncGroupService.getSynchronizersForViewport(viewportId);
 
-        if (!synchronizers?.length || synchronizers.length <= 1) {
+        if (!synchronizers?.length) {
           return {
             className: utils.getToggledClassName(false),
           };
         }
 
-        const isArray = Array.isArray(button.props?.commands);
+        const isArray = Array.isArray(button.commands);
 
         const synchronizerType = isArray
-          ? button.props?.commands?.[0].commandOptions.type
-          : button.props?.commands?.commandOptions.type;
+          ? button.commands?.[0].commandOptions.type
+          : button.commands?.commandOptions.type;
 
         synchronizers = syncGroupService.getSynchronizersOfType(synchronizerType);
 

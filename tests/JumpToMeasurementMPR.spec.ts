@@ -87,6 +87,8 @@ test('should hydrate in MPR correctly', async ({ page }) => {
 
   await page.getByTestId('data-row').first().click();
 
+  await page.waitForTimeout(5000);
+
   await checkForScreenshot(page, page, screenShotPaths.jumpToMeasurementMPR.jumpToMeasurementStack);
 
   await page.getByTestId('Layout').click();
@@ -103,10 +105,13 @@ test('should hydrate in MPR correctly', async ({ page }) => {
   await checkForScreenshot(page, page, screenShotPaths.jumpToMeasurementMPR.jumpInMPR);
 
   await page.locator(':text("S:3")').first().dblclick();
+  await page.waitForTimeout(5000);
 
   await checkForScreenshot(page, page, screenShotPaths.jumpToMeasurementMPR.changeSeriesInMPR);
 
   await page.getByTestId('data-row').first().click();
+
+  await page.waitForTimeout(5000);
 
   await checkForScreenshot(
     page,

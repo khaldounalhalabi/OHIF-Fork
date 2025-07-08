@@ -22,12 +22,11 @@ test.describe('3D only Test', async () => {
       .first()
       .click();
     await attemptAction(() => reduce3DViewportSize(page), 10, 100);
-    // Use a 4 percent diff pixel ratio to account for slight color differences in the 3D viewport
-    await checkForScreenshot({
+    await checkForScreenshot(
       page,
-      locator: page,
-      screenshotPath: screenShotPaths.threeDOnly.threeDOnlyDisplayedCorrectly,
-      maxDiffPixelRatio: 0.04,
-    });
+      page,
+      screenShotPaths.threeDOnly.threeDOnlyDisplayedCorrectly,
+      200
+    );
   });
 });

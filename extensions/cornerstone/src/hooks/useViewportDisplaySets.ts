@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useSystem, utils } from '@ohif/core';
 import { useViewportGrid } from '@ohif/ui-next';
 import {
@@ -122,33 +122,11 @@ export function useViewportDisplaySets(
 
   // Get all available segmentations (only if needed)
   const needsSegmentations = includeOverlay;
-
-  const [segmentationRepresentations, setSegmentationRepresentations] = useState(
-    needsSegmentations ? segmentationService.getSegmentationRepresentations(viewportIdToUse) : []
+  const segmentationRepresentations = useMemo(
+    () =>
+      needsSegmentations ? segmentationService.getSegmentationRepresentations(viewportIdToUse) : [],
+    [segmentationService, viewportIdToUse, needsSegmentations]
   );
-
-  useEffect(() => {
-    setSegmentationRepresentations(
-      needsSegmentations ? segmentationService.getSegmentationRepresentations(viewportIdToUse) : []
-    );
-
-    const unsubscribeArr = needsSegmentations
-      ? [
-          segmentationService.EVENTS.SEGMENTATION_REPRESENTATION_MODIFIED,
-          segmentationService.EVENTS.SEGMENTATION_REPRESENTATION_REMOVED,
-        ].map(event =>
-          segmentationService.subscribe(event, () => {
-            setSegmentationRepresentations(
-              segmentationService.getSegmentationRepresentations(viewportIdToUse)
-            );
-          })
-        )
-      : [];
-
-    return () => {
-      unsubscribeArr.forEach(item => item.unsubscribe());
-    };
-  }, [segmentationService, viewportIdToUse, needsSegmentations]);
 
   const overlayDisplaySets = useMemo(() => {
     if (!includeOverlay) {

@@ -104,11 +104,6 @@ const opacityToLinear = (opacityValue: number): number => {
   return Math.pow(opacityValue, 1.0 / GAMMA);
 };
 
-const is3DViewport = ({ viewportId, cornerstoneViewportService }) => {
-  const viewport = cornerstoneViewportService.getCornerstoneViewport(viewportId);
-  return viewport instanceof VolumeViewport3D;
-};
-
 /**
  * Hook to access window level functionality for a specific viewport
  *
@@ -124,9 +119,7 @@ export function useViewportRendering(
   const { cornerstoneViewportService, colorbarService, customizationService } =
     servicesManager.services;
 
-  const [is3DVolume, setIs3DVolume] = useState(
-    is3DViewport({ viewportId, cornerstoneViewportService })
-  );
+  const [is3DVolume, setIs3DVolume] = useState(false);
   const [hasColorbar, setHasColorbar] = useState(colorbarService.hasColorbar(viewportId));
   const [colorbarPosition, setColorbarPosition] = useState<ColorbarPositionType>(
     options?.location ? getPosition(options.location) : 'bottom'
@@ -240,9 +233,8 @@ export function useViewportRendering(
   }, [allWindowLevelPresets, activeDisplaySetInstanceUID]);
 
   useEffect(() => {
-    setIs3DVolume(is3DViewport({ viewportId, cornerstoneViewportService }));
-
     const viewport = cornerstoneViewportService.getCornerstoneViewport(viewportId);
+    setIs3DVolume(viewport instanceof VolumeViewport3D);
 
     // Initialize the VOI range from the viewport
     if (viewport && activeDisplaySetInstanceUID) {
